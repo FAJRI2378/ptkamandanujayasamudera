@@ -1,14 +1,38 @@
 "use client";
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, ChangeEvent, FormEvent } from 'react';
 import { Ship, Anchor, Users, FileCheck, Award, Globe, Phone, Mail, MapPin, Menu, X, ChevronRight, Star, CheckCircle, Waves, TrendingUp, Building, Briefcase, GraduationCap, Shield, Camera, Wifi, Car, Coffee, Monitor, Clock, UserCheck, Navigation, Compass } from 'lucide-react';
 
-const page = () => {
+interface VisibleSections {
+  [key: string]: boolean;
+}
+
+interface CountedStats {
+  [key: string]: number | boolean;
+}
+
+interface Facility {
+  name: string;
+  description: string;
+  icon: React.ComponentType<{ className?: string }>;
+  features: string[];
+}
+
+interface Certificate {
+  name: string;
+  category: string;
+  description?: string;
+  issuer?: string;
+  date?: string;
+  validUntil?: string;
+}
+
+const Page = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [isLoaded, setIsLoaded] = useState(false);
-  const [visibleSections, setVisibleSections] = useState({});
-  const [countedStats, setCountedStats] = useState({});
+  const [visibleSections, setVisibleSections] = useState<VisibleSections>({});
+  const [countedStats, setCountedStats] = useState<CountedStats>({});
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -18,11 +42,11 @@ const page = () => {
   });
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
-  const [selectedCertificate, setSelectedCertificate] = useState(null);
-  const [selectedFacility, setSelectedFacility] = useState(null);
+  const [selectedCertificate, setSelectedCertificate] = useState<Certificate | null>(null);
+  const [selectedFacility, setSelectedFacility] = useState<Facility | null>(null);
   
-  const sectionRefs = useRef({});
-  const statsRefs = useRef({});
+  const sectionRefs = useRef<{ [key: string]: HTMLElement | null }>({});
+  const statsRefs = useRef<{ [key: string]: HTMLElement | null }>({});
 
   useEffect(() => {
     setTimeout(() => setIsLoaded(true), 100);
@@ -94,12 +118,12 @@ const page = () => {
     });
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFormSubmitted(true);
     setTimeout(() => {
@@ -591,7 +615,7 @@ const page = () => {
       <nav className={`fixed w-full z-50 transition-all duration-500 ${
         scrolled 
           ? 'bg-[#0A2540] shadow-xl py-2' 
-          : 'bg-gradient-to-r from-[#0A2540] to-blue-900 py-4'
+          : 'bg-linear-to-r from-[#0A2540] to-blue-900 py-4'
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
@@ -676,8 +700,8 @@ const page = () => {
       {/* Hero Section */}
       <section 
         id="home" 
-        ref={el => sectionRefs.current['home'] = el}
-        className={`relative pt-24 pb-20 md:pt-32 md:pb-32 bg-gradient-to-br from-[#0A2540] via-[#1a3a5a] to-[#0A2540] overflow-hidden parallax-bg ${
+        ref={el => { sectionRefs.current['home'] = el; }}
+        className={`relative pt-24 pb-20 md:pt-32 md:pb-32 bg-linear-to-br from-[#0A2540] via-[#1a3a5a] to-[#0A2540] overflow-hidden parallax-bg ${
           visibleSections['home'] ? 'animate-in' : ''
         }`}
       >
@@ -778,7 +802,7 @@ const page = () => {
       {/* About Section */}
       <section 
         id="about" 
-        ref={el => sectionRefs.current['about'] = el}
+        ref={el => { sectionRefs.current['about'] = el; }}
         className={`py-20 bg-gray-50 ${visibleSections['about'] ? 'animate-in' : ''}`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -818,7 +842,7 @@ const page = () => {
                         visibleSections['about'] ? 'scale-in' : 'opacity-0'
                       } stagger-${idx + 1}`}
                     >
-                      <Icon className="h-6 w-6 text-blue-500 mt-1 flex-shrink-0" />
+                      <Icon className="h-6 w-6 text-blue-500 mt-1 shrink-0" />
                       <div>
                         <h4 className="font-semibold text-[#0A2540] mb-1">{item.title}</h4>
                         <p className="text-gray-600 text-sm">{item.description}</p>
@@ -857,7 +881,7 @@ const page = () => {
       {/* Services Section */}
       <section 
         id="services" 
-        ref={el => sectionRefs.current['services'] = el}
+        ref={el => { sectionRefs.current['services'] = el; }}
         className={`py-20 bg-white ${visibleSections['services'] ? 'animate-in' : ''}`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -878,7 +902,7 @@ const page = () => {
               return (
                 <article
                   key={index}
-                  className={`bg-gradient-to-br from-gray-50 to-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-blue-300 group hover:scale-105 ${
+                  className={`bg-linear-to-br from-gray-50 to-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-blue-300 group hover:scale-105 ${
                     visibleSections['services'] ? 'scale-in' : 'opacity-0'
                   } stagger-${index + 1}`}
                 >
@@ -902,7 +926,7 @@ const page = () => {
                           visibleSections['services'] ? 'slide-in-bottom' : 'opacity-0'
                         } stagger-${idx + 1}`}
                       >
-                        <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
+                        <CheckCircle className="h-4 w-4 text-green-500 shrink-0" />
                         <span className="text-gray-600 text-sm">{feature}</span>
                       </div>
                     ))}
@@ -921,7 +945,7 @@ const page = () => {
       {/* Fleet Section */}
       <section 
         id="fleet" 
-        ref={el => sectionRefs.current['fleet'] = el}
+        ref={el => { sectionRefs.current['fleet'] = el; }}
         className={`py-20 bg-gray-50 ${visibleSections['fleet'] ? 'animate-in' : ''}`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -944,7 +968,7 @@ const page = () => {
                   visibleSections['fleet'] ? 'scale-in' : 'opacity-0'
                 } stagger-${index + 1}`}
               >
-                <div className="h-56 bg-gradient-to-br from-[#0A2540] to-blue-900 flex items-center justify-center relative overflow-hidden group">
+                <div className="h-56 bg-linear-to-br from-[#0A2540] to-blue-900 flex items-center justify-center relative overflow-hidden group">
                   <Ship className="h-32 w-32 text-white opacity-20 absolute group-hover:opacity-30 transition-opacity" />
                   <Waves className="h-full w-full text-white opacity-10 absolute bottom-0 wave-animation" />
                   <div className="relative z-10 text-center text-white">
@@ -987,7 +1011,7 @@ const page = () => {
       {/* Onboard Crew Section */}
       <section 
         id="team" 
-        ref={el => sectionRefs.current['team'] = el}
+        ref={el => { sectionRefs.current['team'] = el; }}
         className={`py-20 bg-white ${visibleSections['team'] ? 'animate-in' : ''}`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1017,7 +1041,7 @@ const page = () => {
                   } stagger-${index + 1}`}
                 >
                   <div className="relative">
-                    <div className="h-32 bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
+                    <div className="h-32 bg-linear-to-br from-blue-500 to-blue-700 flex items-center justify-center">
                       <UserCheck className="h-16 w-16 text-white opacity-50" />
                     </div>
                     <div className="absolute top-2 right-2">
@@ -1070,7 +1094,7 @@ const page = () => {
                   } stagger-${index + 1}`}
                 >
                   <div className="flex items-start space-x-4">
-                    <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center flex-shrink-0">
+                    <div className="w-20 h-20 bg-linear-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center shrink-0">
                       <Briefcase className="h-10 w-10 text-white" />
                     </div>
                     <div className="flex-1">
@@ -1105,7 +1129,7 @@ const page = () => {
       {/* Office Facilities Section */}
       <section 
         id="facilities" 
-        ref={el => sectionRefs.current['facilities'] = el}
+        ref={el => { sectionRefs.current['facilities'] = el; }}
         className={`py-20 bg-gray-50 ${visibleSections['facilities'] ? 'animate-in' : ''}`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1131,7 +1155,7 @@ const page = () => {
                   } stagger-${index + 1}`}
                   onClick={() => setSelectedFacility(facility)}
                 >
-                  <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 relative overflow-hidden">
+                  <div className="h-48 bg-linear-to-br from-gray-100 to-gray-200 relative overflow-hidden">
                     <div className="absolute inset-0 flex items-center justify-center">
                       <Icon className="h-24 w-24 text-gray-400 group-hover:text-blue-500 transition-colors" />
                     </div>
@@ -1145,7 +1169,7 @@ const page = () => {
                     <div className="space-y-2">
                       {facility.features.slice(0, 3).map((feature, idx) => (
                         <div key={idx} className="flex items-center text-sm text-gray-600">
-                          <CheckCircle className="h-3 w-3 mr-2 text-green-500 flex-shrink-0" />
+                          <CheckCircle className="h-3 w-3 mr-2 text-green-500 shrink-0" />
                           {feature}
                         </div>
                       ))}
@@ -1164,7 +1188,7 @@ const page = () => {
       {/* Certifications Section */}
       <section 
         id="certifications" 
-        ref={el => sectionRefs.current['certifications'] = el}
+        ref={el => { sectionRefs.current['certifications'] = el; }}
         className={`py-20 bg-white ${visibleSections['certifications'] ? 'animate-in' : ''}`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1188,7 +1212,7 @@ const page = () => {
                 } stagger-${index + 1}`}
                 onClick={() => setSelectedCertificate(cert)}
               >
-                <div className="h-48 bg-gradient-to-br from-blue-50 to-blue-100 relative overflow-hidden">
+                <div className="h-48 bg-linear-to-br from-blue-50 to-blue-100 relative overflow-hidden">
                   <div className="absolute inset-0 flex items-center justify-center">
                     <Award className="h-24 w-24 text-blue-300 group-hover:text-blue-500 transition-colors" />
                   </div>
@@ -1225,8 +1249,8 @@ const page = () => {
       {/* Contact Section */}
       <section 
         id="contact" 
-        ref={el => sectionRefs.current['contact'] = el}
-        className={`py-20 bg-gradient-to-br from-[#0A2540] via-blue-900 to-[#0A2540] relative overflow-hidden parallax-bg ${
+        ref={el => { sectionRefs.current['contact'] = el; }}
+        className={`py-20 bg-linear-to-br from-[#0A2540] via-blue-900 to-[#0A2540] relative overflow-hidden parallax-bg ${
           visibleSections['contact'] ? 'animate-in' : ''
         }`}
       >
@@ -1342,7 +1366,7 @@ const page = () => {
                 <h3 className="text-2xl font-bold text-white mb-6">Contact Information</h3>
                 <div className="space-y-6">
                   <div className="flex items-start space-x-4 group">
-                    <div className="bg-blue-500 p-3 rounded-lg flex-shrink-0 group-hover:bg-blue-400 transition-colors">
+                    <div className="bg-blue-500 p-3 rounded-lg shrink-0 group-hover:bg-blue-400 transition-colors">
                       <MapPin className="h-6 w-6 text-white" />
                     </div>
                     <div>
@@ -1354,7 +1378,7 @@ const page = () => {
                   </div>
                   
                   <div className="flex items-start space-x-4 group">
-                    <div className="bg-blue-500 p-3 rounded-lg flex-shrink-0 group-hover:bg-blue-400 transition-colors">
+                    <div className="bg-blue-500 p-3 rounded-lg shrink-0 group-hover:bg-blue-400 transition-colors">
                       <Phone className="h-6 w-6 text-white" />
                     </div>
                     <div>
@@ -1366,7 +1390,7 @@ const page = () => {
                   </div>
                   
                   <div className="flex items-start space-x-4 group">
-                    <div className="bg-blue-500 p-3 rounded-lg flex-shrink-0 group-hover:bg-blue-400 transition-colors">
+                    <div className="bg-blue-500 p-3 rounded-lg shrink-0 group-hover:bg-blue-400 transition-colors">
                       <Mail className="h-6 w-6 text-white" />
                     </div>
                     <div>
@@ -1528,4 +1552,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
